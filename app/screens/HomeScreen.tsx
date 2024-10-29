@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,19 +6,22 @@ import {
   Button,
   FlatList,
   StyleSheet,
-  Platform,
+  Image,
 } from "react-native";
-import { Image } from "react-native";
 import { HelloWave } from "@/app/components/HelloWave";
 import ParallaxScrollView from "@/app/components/ParallaxScrollView";
 import { ThemedText } from "@/app/components/ThemedText";
 import { ThemedView } from "@/app/components/ThemedView";
 import { addTask, fetchTasks } from "@/app/services/databaseService";
+import { signOut } from "firebase/auth";
+import { auth } from "@/app/firebase.ts";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tasks, setTasks] = useState([]);
+  const navigation = useNavigation();
 
   const handleAddTask = async () => {
     await addTask({ title, description });
@@ -30,6 +33,15 @@ export default function HomeScreen() {
     const fetchedTasks = await fetchTasks();
     setTasks(Object.values(fetchedTasks || {}));
   };
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+    navigation.navigate("Auth");
+  };
+
+  useEffect(() => {
+    handleFetchTasks();
+  }, []);
 
   return (
     <ParallaxScrollView
@@ -74,6 +86,7 @@ export default function HomeScreen() {
           )}
         />
       </ThemedView>
+      <Button title="Sign Out" onPress={handleSignOut} />
     </ParallaxScrollView>
   );
 }
