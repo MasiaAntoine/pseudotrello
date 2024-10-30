@@ -55,14 +55,17 @@ const AuthPage: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#353636",
     flex: 1,
     justifyContent: "center",
     padding: 16,
+    gap: 8,
   },
   title: {
     fontSize: 24,
     marginBottom: 16,
     textAlign: "center",
+    color: "white",
   },
   input: {
     height: 40,
