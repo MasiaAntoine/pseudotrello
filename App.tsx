@@ -1,12 +1,16 @@
+import { registerRootComponent } from "expo";
+import { ExpoRouter } from "expo-router";
 import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import AppNavigator from "@/app/navigation/AppNavigator";
+import { AuthProvider } from "@/app/context/AuthContext";
 
 const App: React.FC = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <AppNavigator />
-    </SafeAreaView>
+    <AuthProvider>
+      <SafeAreaView style={styles.container}>
+        <ExpoRouter />
+      </SafeAreaView>
+    </AuthProvider>
   );
 };
 
@@ -16,4 +20,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default registerRootComponent(App);

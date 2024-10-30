@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   Button,
   FlatList,
   StyleSheet,
-  Platform,
 } from "react-native";
 import { Image } from "react-native";
 import { HelloWave } from "@/app/components/HelloWave";
@@ -14,21 +13,26 @@ import ParallaxScrollView from "@/app/components/ParallaxScrollView";
 import { ThemedText } from "@/app/components/ThemedText";
 import { ThemedView } from "@/app/components/ThemedView";
 import { addTask, fetchTasks } from "@/app/services/databaseService";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function HomeScreen() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tasks, setTasks] = useState([]);
+  const { user, logout } = useAuth();
+
+  useEffect(() => {
+    const handleFetchTasks = async () => {
+      const fetchedTasks = await fetchTasks();
+      setTasks(Object.values(fetchedTasks || {}));
+    };
+    handleFetchTasks();
+  }, []);
 
   const handleAddTask = async () => {
     await addTask({ title, description });
     setTitle("");
     setDescription("");
-  };
-
-  const handleFetchTasks = async () => {
-    const fetchedTasks = await fetchTasks();
-    setTasks(Object.values(fetchedTasks || {}));
   };
 
   return (
@@ -42,7 +46,7 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Welcome, {user?.email}!</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -62,7 +66,6 @@ export default function HomeScreen() {
         <Button title="Add Task" onPress={handleAddTask} />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <Button title="Fetch Tasks" onPress={handleFetchTasks} />
         <FlatList
           data={tasks}
           keyExtractor={(item, index) => index.toString()}
@@ -73,6 +76,9 @@ export default function HomeScreen() {
             </View>
           )}
         />
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <Button title="Logout" onPress={logout} />
       </ThemedView>
     </ParallaxScrollView>
   );
