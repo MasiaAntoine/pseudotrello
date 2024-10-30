@@ -14,7 +14,7 @@ export default function TabTwoScreen() {
       <ThemedText type="title">Compte</ThemedText>
 
       <ThemedText style={styles.space} type="default">
-        Connected as: {user.user.email}
+        {user.user.email}
       </ThemedText>
 
       <ThemedView>
