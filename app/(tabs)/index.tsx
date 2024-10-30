@@ -19,7 +19,7 @@ export default function HomeScreen() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tasks, setTasks] = useState([]);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleFetchTasks = async () => {
@@ -76,9 +76,6 @@ export default function HomeScreen() {
             </View>
           )}
         />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Button title="Logout" onPress={logout} />
       </ThemedView>
     </ParallaxScrollView>
   );

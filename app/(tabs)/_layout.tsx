@@ -30,9 +30,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="explore"
+          name="profile"
           options={{
-            title: "Explore",
+            title: "Profile",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 name={focused ? "code-slash" : "code-slash-outline"}
@@ -45,6 +45,7 @@ export default function TabLayout() {
           name="auth"
           options={{
             title: "AuthPage",
+            tabBarButton: () => null,
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 name={focused ? "log-in" : "log-in-outline"}

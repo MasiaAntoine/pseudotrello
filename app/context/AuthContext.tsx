@@ -27,6 +27,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   const login = async (email: string, password: string) => {
     const user = await signInWithEmailAndPassword(auth, email, password);
     setUser(user);
+    router.push("/");
   };
 
   const register = async (email: string, password: string) => {

@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { useAuth } from "@/app/context/AuthContext";
+import ThemedTextInput from "@/app/components/ThemedTextInput";
+import { useRouter } from "expo-router";
 
 const AuthPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const { login, register } = useAuth();
+  const router = useRouter();
 
   const handleAuth = async () => {
     try {
       if (isLogin) {
         await login(email, password);
-        console.log("Connexion réussie !");
       } else {
         await register(email, password);
-        console.log("Inscription réussie !");
       }
     } catch (error) {
       console.error("Erreur d'authentification:", error);
