@@ -21,7 +21,7 @@ export default function TabTwoScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Profile</ThemedText>
+        <ThemedText type="title">Compte</ThemedText>
       </ThemedView>
       {user && (
         <ThemedView style={styles.emailContainer}>
