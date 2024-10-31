@@ -1,10 +1,10 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
-import { Button } from "react-native";
 
 import { ThemedText } from "@/app/components/ThemedText";
 import { ThemedView } from "@/app/components/ThemedView";
 import { useAuth } from "@/app/context/AuthContext";
+import CustomButton from "@/app/components/CustomButton";
 
 export default function TabTwoScreen() {
   const { user, logout } = useAuth();
@@ -17,9 +17,7 @@ export default function TabTwoScreen() {
         {user.user.email}
       </ThemedText>
 
-      <ThemedView>
-        <Button title="Logout" onPress={logout} />
-      </ThemedView>
+      <CustomButton title="Logout" onPress={logout} />
     </View>
   );
 }
