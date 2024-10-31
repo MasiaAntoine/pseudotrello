@@ -1,5 +1,5 @@
 import { database } from "@/app/firebase.ts";
-import { ref, push, get, set } from "firebase/database";
+import { ref, push, get, set, remove } from "firebase/database";
 
 // Fonction pour ajouter une liste associée à une table
 const addList = async (list: { name: string; tableId: string }) => {
@@ -47,4 +47,15 @@ const fetchListById = async (tableId: string, listId: string) => {
   }
 };
 
-export { addList, fetchLists, fetchListById };
+// Fonction pour supprimer une liste par rapport à son id
+const deleteList = async (tableId: string, listId: string) => {
+  try {
+    const listRef = ref(database, `tables/${tableId}/lists/${listId}`);
+    await remove(listRef);
+    console.log("Liste supprimée avec succès !");
+  } catch (error) {
+    console.error("Erreur lors de la suppression de la liste:", error);
+  }
+};
+
+export { addList, fetchLists, fetchListById, deleteList };

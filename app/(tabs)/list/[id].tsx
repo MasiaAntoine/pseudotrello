@@ -18,6 +18,7 @@ import {
   deleteTable,
   addList,
   fetchLists,
+  deleteList,
 } from "@/app/services";
 
 const truncateText = (text: string, maxLength: number) => {
@@ -73,6 +74,20 @@ export default function TabTwoScreen() {
     }
   };
 
+  const handleDeleteList = async (listId: string) => {
+    try {
+      await deleteList(id as string, listId);
+      fetchLists(id as string).then((data) => {
+        setLists(data);
+      });
+    } catch (error) {
+      Alert.alert(
+        "Erreur",
+        "Une erreur est survenue lors de la suppression de la liste."
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -97,9 +112,17 @@ export default function TabTwoScreen() {
         horizontal
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ThemedText style={styles.listItem} type="default">
-            {truncateText(item.name, 27)}
-          </ThemedText>
+          <View style={styles.listItem}>
+            <ThemedText style={styles.listItemText} type="default">
+              {truncateText(item.name, 27)}
+            </ThemedText>
+            <TouchableOpacity
+              onPress={() => handleDeleteList(item.id)}
+              style={styles.deleteListButton}
+            >
+              <Ionicons name="close" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
         )}
         style={styles.listContainer}
       />
@@ -136,10 +159,18 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   listItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
     padding: 16,
     backgroundColor: "#c7ecff",
     color: "#000",
     marginHorizontal: 6,
     width: 300,
+  },
+  listItemText: {
+    color: "#000",
+  },
+  deleteListButton: {
+    marginLeft: "auto",
   },
 });
