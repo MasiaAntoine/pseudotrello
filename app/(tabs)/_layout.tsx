@@ -48,7 +48,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="task/[listId]/[taskId]"
+          name="task/[tableId]/[listId]/[taskId]"
           options={{
             tabBarButton: () => null,
           }}

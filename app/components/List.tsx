@@ -123,7 +123,7 @@ const List: React.FC<ListProps> = ({
         data={tasks}
         keyExtractor={(task) => task.id}
         renderItem={({ item: task }) => (
-          <Task listId={id} id={task.id} name={task.name} />
+          <Task tableId={tableId} listId={id} id={task.id} name={task.name} />
         )}
       />
       <View style={styles.taskInputContainer}>

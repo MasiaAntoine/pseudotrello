@@ -4,16 +4,17 @@ import { ThemedText } from "@/app/components/ThemedText";
 import { useRouter } from "expo-router";
 
 interface TaskProps {
+  tableId: string;
   listId: string;
   id: string;
   name: string;
 }
 
-const Task: React.FC<TaskProps> = ({ listId, id, name }) => {
+const Task: React.FC<TaskProps> = ({ tableId, listId, id, name }) => {
   const router = useRouter();
 
   const handlePress = () => {
-    router.push(`/task/${listId}/${id}`);
+    router.push(`/task/${tableId}/${listId}/${id}`);
   };
 
   return (
