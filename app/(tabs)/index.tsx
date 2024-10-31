@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Button,
   StyleSheet,
   Alert,
   TextInput,
   FlatList,
   TouchableOpacity,
 } from "react-native";
+import CustomButton from "@/app/components/CustomButton";
 import { useAuth } from "@/app/context/AuthContext";
 import { ThemedText } from "@/app/components/ThemedText";
 import { useRouter, useNavigation } from "expo-router";
@@ -82,7 +82,7 @@ const TablePage: React.FC = () => {
         onChangeText={setTableName}
         style={styles.input}
       />
-      <Button title="Ajouter un tableau" onPress={handleAddTable} />
+      <CustomButton title="Ajouter un tableau" onPress={handleAddTable} />
       <FlatList
         data={tables}
         keyExtractor={(item, index) => index.toString()}

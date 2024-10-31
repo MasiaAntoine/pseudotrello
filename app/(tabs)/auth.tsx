@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet } from "react-native";
 import { useAuth } from "@/app/context/AuthContext";
 import ThemedTextInput from "@/app/components/ThemedTextInput";
 import { useRouter } from "expo-router";
+import CustomButton from "@/app/components/CustomButton";
 
 const AuthPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -41,11 +42,11 @@ const AuthPage: React.FC = () => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button
+      <CustomButton
         title={isLogin ? "Se connecter" : "S'inscrire"}
         onPress={handleAuth}
       />
-      <Button
+      <CustomButton
         title={isLogin ? "Créer un compte" : "Se connecter"}
         onPress={() => setIsLogin(!isLogin)}
       />
@@ -73,6 +74,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+    color: "black",
   },
 });
 
