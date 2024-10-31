@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import { useAuth } from "@/app/context/AuthContext";
 import ThemedTextInput from "@/app/components/ThemedTextInput";
 import { useRouter } from "expo-router";
@@ -12,15 +12,38 @@ const AuthPage: React.FC = () => {
   const { login, register } = useAuth();
   const router = useRouter();
 
+  const validatePassword = (password: string) => {
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
   const handleAuth = async () => {
+    if (!validatePassword(password)) {
+      Alert.alert(
+        "Erreur de mot de passe",
+        "Le mot de passe doit contenir au moins 8 caractères, dont 1 chiffre, 1 majuscule et 1 caractère spécial."
+      );
+      return;
+    }
+
     try {
       if (isLogin) {
         await login(email, password);
       } else {
         await register(email, password);
+        Alert.alert(
+          "Inscription réussie",
+          "Vous êtes inscrit avec succès. Vous pouvez maintenant vous connecter."
+        );
+        setIsLogin(true);
       }
     } catch (error) {
       console.error("Erreur d'authentification:", error);
+      Alert.alert(
+        "Erreur d'authentification",
+        "Une erreur est survenue lors de l'authentification."
+      );
     }
   };
 
