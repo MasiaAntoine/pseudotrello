@@ -20,6 +20,13 @@ import {
   fetchLists,
 } from "@/app/services";
 
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + " ...";
+  }
+  return text;
+};
+
 export default function TabTwoScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
@@ -91,7 +98,7 @@ export default function TabTwoScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ThemedText style={styles.listItem} type="default">
-            {item.name}
+            {truncateText(item.name, 27)}
           </ThemedText>
         )}
         style={styles.listContainer}
@@ -130,7 +137,7 @@ const styles = StyleSheet.create({
   },
   listItem: {
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#c7ecff",
     color: "#000",
     marginHorizontal: 6,
     width: 300,
