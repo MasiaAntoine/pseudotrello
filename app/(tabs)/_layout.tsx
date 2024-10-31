@@ -42,16 +42,15 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="list/[id]"
+          options={{
+            tabBarButton: () => null,
+          }}
+        />
+        <Tabs.Screen
           name="auth"
           options={{
-            title: "AuthPage",
             tabBarButton: () => null,
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon
-                name={focused ? "log-in" : "log-in-outline"}
-                color={color}
-              />
-            ),
           }}
         />
       </Tabs>

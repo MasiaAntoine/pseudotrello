@@ -6,6 +6,7 @@ import {
   Alert,
   TextInput,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
 import { useAuth } from "@/app/context/AuthContext";
 import { ThemedText } from "@/app/components/ThemedText";
@@ -67,6 +68,10 @@ const TablePage: React.FC = () => {
     }
   };
 
+  const handlePressItem = (tableId: string) => {
+    router.push(`/list/${tableId}`);
+  };
+
   return (
     <View style={styles.container}>
       <ThemedText type="title">Tableaux</ThemedText>
@@ -81,9 +86,11 @@ const TablePage: React.FC = () => {
         data={tables}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <View style={styles.tableItem}>
-            <ThemedText type="default">{item.name}</ThemedText>
-          </View>
+          <TouchableOpacity onPress={() => handlePressItem(item.id)}>
+            <View style={styles.tableItem}>
+              <ThemedText type="default">{item.name}</ThemedText>
+            </View>
+          </TouchableOpacity>
         )}
       />
     </View>

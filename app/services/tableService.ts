@@ -1,11 +1,19 @@
 import { database } from "@/app/firebase.ts";
-import { ref, push, get } from "firebase/database";
+import { ref, push, get, set } from "firebase/database";
 
 // Fonction pour ajouter un tableau
 const addTable = async (table: { name: string; userId: string }) => {
   try {
     const tablesRef = ref(database, "tables");
-    await push(tablesRef, table);
+    const newTableRef = push(tablesRef);
+    const newTableId = newTableRef.key;
+
+    const newTable = {
+      ...table,
+      id: newTableId,
+    };
+
+    await set(newTableRef, newTable); // Utiliser set directement sur newTableRef
     console.log("Tableau ajouté avec succès !");
   } catch (error) {
     console.error("Erreur lors de l'ajout du tableau:", error);
@@ -29,4 +37,17 @@ const fetchTables = async (userId: string) => {
   }
 };
 
-export { addTable, fetchTables };
+// Fonction pour récupérer les données d'un tableau par rapport à son id
+const fetchTableById = async (tableId: string) => {
+  try {
+    const tableRef = ref(database, `tables/${tableId}`);
+    const snapshot = await get(tableRef);
+    const table = snapshot.val();
+    return table;
+  } catch (error) {
+    console.error("Erreur lors de la récupération du tableau:", error);
+    return null;
+  }
+};
+
+export { addTable, fetchTables, fetchTableById };
