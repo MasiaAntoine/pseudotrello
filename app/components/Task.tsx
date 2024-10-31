@@ -19,7 +19,7 @@ const Task: React.FC<TaskProps> = ({ name }) => {
 const styles = StyleSheet.create({
   taskContainer: {
     marginTop: 5,
-    width: "69vw",
+    maxWidth: "74vw",
     backgroundColor: "#f0f0f0",
     padding: 10,
   },

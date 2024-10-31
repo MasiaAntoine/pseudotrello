@@ -144,13 +144,10 @@ const List: React.FC<ListProps> = ({
 
 const styles = StyleSheet.create({
   listItem: {
-    flexDirection: "column",
-    alignItems: "flex-start",
     padding: 16,
     backgroundColor: "#c7ecff",
     color: "#000",
     marginHorizontal: 6,
-    width: 300,
   },
   listHeader: {
     flexDirection: "row",
@@ -183,6 +180,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     color: "black",
     flex: 1,
+    backgroundColor: "#000",
+    color: "#fff",
   },
   addButton: {
     backgroundColor: "blue",
