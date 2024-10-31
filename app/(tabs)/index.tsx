@@ -58,7 +58,6 @@ const TablePage: React.FC = () => {
       };
 
       await addTable(newTable);
-      Alert.alert("Succès", "Tableau ajouté avec succès.");
       setTableName("");
       handleFetchTables();
     } catch (error) {

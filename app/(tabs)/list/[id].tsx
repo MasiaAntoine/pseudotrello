@@ -54,7 +54,6 @@ export default function TabTwoScreen() {
 
     try {
       await addList({ name: listName, tableId: id as string });
-      Alert.alert("Succès", "Liste ajoutée avec succès.");
       setListName("");
       fetchLists(id as string).then((data) => {
         setLists(data);
