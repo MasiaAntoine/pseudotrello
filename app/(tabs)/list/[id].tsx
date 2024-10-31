@@ -19,6 +19,7 @@ import {
   addList,
   fetchLists,
   deleteList,
+  updateListName,
 } from "@/app/services";
 
 const truncateText = (text: string, maxLength: number) => {
@@ -34,6 +35,8 @@ export default function TabTwoScreen() {
   const [tableData, setTableData] = useState(null);
   const [listName, setListName] = useState("");
   const [lists, setLists] = useState([]);
+  const [editingListId, setEditingListId] = useState<string | null>(null);
+  const [editingListName, setEditingListName] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -88,6 +91,31 @@ export default function TabTwoScreen() {
     }
   };
 
+  const handleEditListName = async () => {
+    if (!editingListName.trim()) {
+      Alert.alert("Erreur", "Le nom de la liste ne peut pas être vide.");
+      return;
+    }
+
+    try {
+      await updateListName(
+        id as string,
+        editingListId as string,
+        editingListName
+      );
+      setEditingListId(null);
+      setEditingListName("");
+      fetchLists(id as string).then((data) => {
+        setLists(data);
+      });
+    } catch (error) {
+      Alert.alert(
+        "Erreur",
+        "Une erreur est survenue lors de la modification de la liste."
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -113,9 +141,25 @@ export default function TabTwoScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.listItem}>
-            <ThemedText style={styles.listItemText} type="default">
-              {truncateText(item.name, 27)}
-            </ThemedText>
+            {editingListId === item.id ? (
+              <TextInput
+                value={editingListName}
+                onChangeText={setEditingListName}
+                onBlur={handleEditListName}
+                style={styles.listItemTextInput}
+              />
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  setEditingListId(item.id);
+                  setEditingListName(item.name);
+                }}
+              >
+                <ThemedText style={styles.listItemText} type="default">
+                  {truncateText(item.name, 27)}
+                </ThemedText>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               onPress={() => handleDeleteList(item.id)}
               style={styles.deleteListButton}
@@ -169,6 +213,12 @@ const styles = StyleSheet.create({
   },
   listItemText: {
     color: "#000",
+  },
+  listItemTextInput: {
+    color: "#000",
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+    width: "80%",
   },
   deleteListButton: {
     marginLeft: "auto",

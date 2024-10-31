@@ -1,5 +1,5 @@
 import { database } from "@/app/firebase.ts";
-import { ref, push, get, set, remove } from "firebase/database";
+import { ref, push, get, set, remove, update } from "firebase/database";
 
 // Fonction pour ajouter une liste associée à une table
 const addList = async (list: { name: string; tableId: string }) => {
@@ -58,4 +58,19 @@ const deleteList = async (tableId: string, listId: string) => {
   }
 };
 
-export { addList, fetchLists, fetchListById, deleteList };
+// Fonction pour mettre à jour le nom d'une liste
+const updateListName = async (
+  tableId: string,
+  listId: string,
+  newName: string
+) => {
+  try {
+    const listRef = ref(database, `tables/${tableId}/lists/${listId}`);
+    await update(listRef, { name: newName });
+    console.log("Nom de la liste mis à jour avec succès !");
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du nom de la liste:", error);
+  }
+};
+
+export { addList, fetchLists, fetchListById, deleteList, updateListName };
