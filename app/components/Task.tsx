@@ -1,22 +1,33 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/app/components/ThemedText";
+import { useRouter } from "expo-router";
 
 interface TaskProps {
+  listId: string;
+  id: string;
   name: string;
 }
 
-const Task: React.FC<TaskProps> = ({ name }) => {
+const Task: React.FC<TaskProps> = ({ listId, id, name }) => {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push(`/task/${listId}/${id}`);
+  };
+
   return (
-    <View style={styles.taskContainer}>
-      <ThemedText
-        style={styles.taskItemText}
-        type="default"
-        ellipsizeMode="tail"
-      >
-        {name}
-      </ThemedText>
-    </View>
+    <TouchableOpacity onPress={handlePress}>
+      <View style={styles.taskContainer}>
+        <ThemedText
+          style={styles.taskItemText}
+          type="default"
+          ellipsizeMode="tail"
+        >
+          {name}
+        </ThemedText>
+      </View>
+    </TouchableOpacity>
   );
 };
 

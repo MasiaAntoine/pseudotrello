@@ -122,7 +122,9 @@ const List: React.FC<ListProps> = ({
       <FlatList
         data={tasks}
         keyExtractor={(task) => task.id}
-        renderItem={({ item: task }) => <Task name={task.name} />}
+        renderItem={({ item: task }) => (
+          <Task listId={id} id={task.id} name={task.name} />
+        )}
       />
       <View style={styles.taskInputContainer}>
         <TextInput
@@ -157,6 +159,7 @@ const styles = StyleSheet.create({
   },
   listItemText: {
     color: "#000",
+    width: "80%",
   },
   listItemTextInput: {
     color: "#000",

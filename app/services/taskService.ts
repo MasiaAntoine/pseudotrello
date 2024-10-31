@@ -59,4 +59,17 @@ const updateTaskName = async (
   }
 };
 
-export { addTask, fetchTasks, deleteTask, updateTaskName };
+// Fonction pour récupérer les données d'une tâche par rapport à son id
+const fetchTaskById = async (listId: string, taskId: string) => {
+  try {
+    const taskRef = ref(database, `tables/${listId}/tasks/${taskId}`);
+    const snapshot = await get(taskRef);
+    const task = snapshot.val();
+    return task;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de la tâche:", error);
+    return null;
+  }
+};
+
+export { fetchTaskById, addTask, fetchTasks, deleteTask, updateTaskName };
