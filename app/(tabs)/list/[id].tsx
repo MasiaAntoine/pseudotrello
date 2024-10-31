@@ -5,7 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { ThemedText } from "@/app/components/ThemedText";
 import { ThemedView } from "@/app/components/ThemedView";
-import { fetchTableById } from "@/app/services";
+import { fetchTableById, deleteTable } from "@/app/services";
 
 export default function TabTwoScreen() {
   const { id } = useLocalSearchParams();
@@ -20,6 +20,14 @@ export default function TabTwoScreen() {
     }
   }, [id]);
 
+  const handleDelete = () => {
+    if (id) {
+      deleteTable(id as string).then(() => {
+        router.push("/");
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -27,6 +35,9 @@ export default function TabTwoScreen() {
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <ThemedText type="title">{`${tableData?.name}`}</ThemedText>
+        <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
+          <Ionicons name="close" size={24} color="white" />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -45,4 +56,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   space: { marginVertical: 12 },
+  deleteButton: {
+    marginLeft: "auto",
+  },
 });

@@ -1,5 +1,5 @@
 import { database } from "@/app/firebase.ts";
-import { ref, push, get, set } from "firebase/database";
+import { ref, push, get, set, remove } from "firebase/database";
 
 // Fonction pour ajouter un tableau
 const addTable = async (table: { name: string; userId: string }) => {
@@ -50,4 +50,15 @@ const fetchTableById = async (tableId: string) => {
   }
 };
 
-export { addTable, fetchTables, fetchTableById };
+// Fonction pour supprimer un tableau par rapport à son id
+const deleteTable = async (tableId: string) => {
+  try {
+    const tableRef = ref(database, `tables/${tableId}`);
+    await remove(tableRef);
+    console.log("Tableau supprimé avec succès !");
+  } catch (error) {
+    console.error("Erreur lors de la suppression du tableau:", error);
+  }
+};
+
+export { addTable, fetchTables, fetchTableById, deleteTable };

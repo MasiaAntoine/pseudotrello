@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useAuth } from "@/app/context/AuthContext";
 import { ThemedText } from "@/app/components/ThemedText";
-import { useRouter } from "expo-router";
+import { useRouter, useNavigation } from "expo-router";
 import { addTable, fetchTables } from "@/app/services";
 
 const TablePage: React.FC = () => {
@@ -18,28 +18,34 @@ const TablePage: React.FC = () => {
   const [tables, setTables] = useState([]);
   const { user } = useAuth();
   const router = useRouter();
+  const navigation = useNavigation();
+
+  const handleFetchTables = async () => {
+    if (user && user.user.uid) {
+      const fetchedTables = await fetchTables(user.user.uid);
+      setTables(fetchedTables || []);
+    }
+  };
 
   useEffect(() => {
-    const handleFetchTables = async () => {
-      if (user && user.user.uid) {
-        const fetchedTables = await fetchTables(user.user.uid);
-        setTables(fetchedTables || []);
-      }
-    };
     handleFetchTables();
   }, [user]);
 
-  const handleAddTable = async () => {
-    console.log("handleAddTable called");
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      handleFetchTables();
+    });
 
+    return unsubscribe;
+  }, [navigation]);
+
+  const handleAddTable = async () => {
     if (!tableName.trim()) {
-      console.log("Table name is empty");
       Alert.alert("Erreur", "Le nom du tableau ne peut pas être vide.");
       return;
     }
 
     if (!user || !user.user.uid) {
-      console.log("User not logged in or UID not available");
       Alert.alert("Erreur", "Utilisateur non connecté ou UID non disponible.");
       return;
     }
@@ -51,16 +57,11 @@ const TablePage: React.FC = () => {
         createdAt: new Date().toISOString(),
       };
 
-      console.log("Adding table:", newTable);
-
       await addTable(newTable);
-      console.log("Table added successfully");
       Alert.alert("Succès", "Tableau ajouté avec succès.");
       setTableName("");
-      const fetchedTables = await fetchTables(user.user.uid);
-      setTables(fetchedTables || []);
+      handleFetchTables();
     } catch (error) {
-      console.error("Erreur lors de l'ajout du tableau:", error);
       Alert.alert(
         "Erreur",
         "Une erreur est survenue lors de l'ajout du tableau."
