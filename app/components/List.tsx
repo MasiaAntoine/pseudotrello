@@ -92,31 +92,33 @@ const List: React.FC<ListProps> = ({
 
   return (
     <View style={styles.listItem}>
-      {editingListId === id ? (
-        <TextInput
-          value={editingListName}
-          onChangeText={setEditingListName}
-          onBlur={handleEditListName}
-          style={styles.listItemTextInput}
-        />
-      ) : (
+      <View style={styles.listHeader}>
+        {editingListId === id ? (
+          <TextInput
+            value={editingListName}
+            onChangeText={setEditingListName}
+            onBlur={handleEditListName}
+            style={styles.listItemTextInput}
+          />
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              setEditingListId(id);
+              setEditingListName(name);
+            }}
+          >
+            <ThemedText style={styles.listItemText} type="default">
+              {name}
+            </ThemedText>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
-          onPress={() => {
-            setEditingListId(id);
-            setEditingListName(name);
-          }}
+          onPress={handleDeleteList}
+          style={styles.deleteListButton}
         >
-          <ThemedText style={styles.listItemText} type="default">
-            {name}
-          </ThemedText>
+          <Ionicons name="close" size={24} color="black" />
         </TouchableOpacity>
-      )}
-      <TouchableOpacity
-        onPress={handleDeleteList}
-        style={styles.deleteListButton}
-      >
-        <Ionicons name="close" size={24} color="black" />
-      </TouchableOpacity>
+      </View>
       <FlatList
         data={tasks}
         keyExtractor={(task) => task.id}
@@ -150,6 +152,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 6,
     width: 300,
   },
+  listHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 10,
+  },
   listItemText: {
     color: "#000",
   },
@@ -160,7 +169,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   deleteListButton: {
-    alignSelf: "flex-end",
+    marginLeft: "auto",
   },
   taskInputContainer: {
     flexDirection: "row",
