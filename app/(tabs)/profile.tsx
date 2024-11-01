@@ -14,7 +14,7 @@ export default function TabTwoScreen() {
       <ThemedText type="title">Compte</ThemedText>
 
       <ThemedText style={styles.space} type="default">
-        {user.user.email}
+        {user.email}
       </ThemedText>
 
       <CustomButton title="Logout" onPress={logout} />

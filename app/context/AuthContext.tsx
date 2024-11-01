@@ -5,9 +5,10 @@ import {
   signOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  sendEmailVerification,
 } from "firebase/auth";
 import { useRouter, usePathname, Redirect } from "expo-router";
-import { set } from "firebase/database";
+import { Alert } from "react-native"; // Importer Alert
 
 interface AuthContextProps {
   user: any;
@@ -25,20 +26,47 @@ export const AuthProvider: React.FC = ({ children }) => {
   const pathname = usePathname();
 
   const login = async (email: string, password: string) => {
-    const user = await signInWithEmailAndPassword(auth, email, password);
-    setUser(user);
-    router.push("/");
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    if (userCredential.user.emailVerified) {
+      setUser(userCredential.user);
+      router.push("/");
+    } else {
+      await signOut(auth);
+      Alert.alert(
+        "Email non vérifié",
+        "Veuillez vérifier votre email avant de vous connecter."
+      );
+    }
   };
 
   const register = async (email: string, password: string) => {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-    setUser(user);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    await sendEmailVerification(userCredential.user);
+    Alert.alert(
+      "Inscription réussie",
+      "Un email de confirmation a été envoyé. Veuillez vérifier votre boîte de réception."
+    );
   };
 
   const logout = async () => {
     await signOut(auth);
     setUser(null);
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return unsubscribe;
+  }, []);
 
   if (!user && pathname !== "/auth") {
     return <Redirect href="/auth" />;

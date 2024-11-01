@@ -24,8 +24,8 @@ const TablePage: React.FC = () => {
   const navigation = useNavigation();
 
   const handleFetchTables = async () => {
-    if (user && user.user.uid) {
-      const fetchedTables = await fetchTables(user.user.uid);
+    if (user && user.uid) {
+      const fetchedTables = await fetchTables(user.uid);
       setTables(fetchedTables || []);
     }
   };
@@ -48,7 +48,7 @@ const TablePage: React.FC = () => {
       return;
     }
 
-    if (!user || !user.user.uid) {
+    if (!user || !user.uid) {
       Alert.alert("Erreur", "Utilisateur non connecté ou UID non disponible.");
       return;
     }
@@ -56,7 +56,7 @@ const TablePage: React.FC = () => {
     try {
       const newTable = {
         name: tableName,
-        userId: user.user.uid,
+        userId: user.uid,
         createdAt: new Date().toISOString(),
       };
 

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import { useAuth } from "@/app/context/AuthContext";
-import ThemedTextInput from "@/app/components/ThemedTextInput";
 import { useRouter } from "expo-router";
 import CustomButton from "@/app/components/CustomButton";
 
@@ -34,7 +33,7 @@ const AuthPage: React.FC = () => {
         await register(email, password);
         Alert.alert(
           "Inscription réussie",
-          "Vous êtes inscrit avec succès. Vous pouvez maintenant vous connecter."
+          "Vous êtes inscrit avec succès. Un email de confirmation a été envoyé. Veuillez vérifier votre boîte de réception."
         );
         setIsLogin(true);
       }
