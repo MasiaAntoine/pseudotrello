@@ -141,7 +141,10 @@ export default function TabTwoScreen() {
             id={item.id}
             name={item.name}
             tableId={id as string}
-            tasks={tasks[item.id] || []}
+            tasks={(tasks[item.id] || []).map((task) => ({
+              ...task,
+              name: truncateText(task.name, 40),
+            }))}
             onTasksUpdate={handleTasksUpdate}
             onListUpdate={handleListUpdate}
           />
