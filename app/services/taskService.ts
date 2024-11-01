@@ -1,5 +1,11 @@
-import { database } from "@/app/firebase.ts";
+import { database, storage } from "@/app/firebase.ts";
 import { ref, push, get, set, remove, update } from "firebase/database";
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
 // Fonction pour ajouter une tâche associée à une liste
 const addTask = async (task: { name: string; listId: string }) => {
@@ -44,18 +50,18 @@ const deleteTask = async (listId: string, taskId: string) => {
   }
 };
 
-// Fonction pour mettre à jour le nom d'une tâche
+// Fonction pour mettre à jour une tâche
 const updateTaskName = async (
   listId: string,
   taskId: string,
-  newName: string
+  updates: { name?: string; imageUri?: string | null }
 ) => {
   try {
     const taskRef = ref(database, `tables/${listId}/tasks/${taskId}`);
-    await update(taskRef, { name: newName });
-    console.log("Nom de la tâche mis à jour avec succès !");
+    await update(taskRef, updates);
+    console.log("Tâche mise à jour avec succès !");
   } catch (error) {
-    console.error("Erreur lors de la mise à jour du nom de la tâche:", error);
+    console.error("Erreur lors de la mise à jour de la tâche:", error);
   }
 };
 
@@ -97,6 +103,23 @@ const updateTaskListId = async (
   }
 };
 
+// Fonction pour télécharger une image de tâche
+const uploadTaskImage = async (listId: string, taskId: string, uri: string) => {
+  const response = await fetch(uri);
+  const blob = await response.blob();
+  const storageReference = storageRef(storage, `tasks/${taskId}`);
+  await uploadBytes(storageReference, blob);
+  const downloadURL = await getDownloadURL(storageReference);
+  await updateTaskName(listId, taskId, { imageUri: downloadURL });
+  return downloadURL;
+};
+
+// Fonction pour supprimer une image de tâche
+const deleteTaskImage = async (taskId: string) => {
+  const storageReference = storageRef(storage, `tasks/${taskId}`);
+  await deleteObject(storageReference);
+};
+
 export {
   updateTaskListId,
   fetchTaskById,
@@ -104,4 +127,6 @@ export {
   fetchTasks,
   deleteTask,
   updateTaskName,
+  uploadTaskImage,
+  deleteTaskImage,
 };

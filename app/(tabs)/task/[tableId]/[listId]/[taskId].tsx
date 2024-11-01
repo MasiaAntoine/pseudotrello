@@ -5,11 +5,13 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Picker,
+  Image,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import * as ImagePicker from "expo-image-picker";
+import { Picker } from "@react-native-picker/picker"; // Importer Picker depuis @react-native-picker/picker
 import { ThemedText } from "@/app/components/ThemedText";
 import CustomButton from "@/app/components/CustomButton";
 import {
@@ -19,6 +21,8 @@ import {
   updateTaskListId,
   fetchTableById,
   deleteTask,
+  uploadTaskImage,
+  deleteTaskImage,
 } from "@/app/services";
 
 const TaskPage: React.FC = () => {
@@ -34,6 +38,7 @@ const TaskPage: React.FC = () => {
   );
   const [tableName, setTableName] = useState<string>("");
   const [listName, setListName] = useState<string>("");
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   const fetchData = useCallback(() => {
     if (tableId) {
@@ -63,6 +68,7 @@ const TaskPage: React.FC = () => {
       fetchTaskById(listId as string, taskId as string).then((data) => {
         setTaskData(data);
         setTaskText(data?.name || "");
+        setImageUri(data?.imageUri || null);
       });
     }
   }, [listId, taskId]);
@@ -83,15 +89,14 @@ const TaskPage: React.FC = () => {
     setIsEditing(true);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (updates: any = {}) => {
     if (selectedListId && taskId) {
-      await updateTaskName(
-        selectedListId as string,
-        taskId as string,
-        taskText
-      );
+      await updateTaskName(selectedListId as string, taskId as string, {
+        name: taskText,
+        ...updates,
+      });
       setIsEditing(false);
-      setTaskData({ ...taskData, name: taskText });
+      setTaskData({ ...taskData, name: taskText, ...updates });
     }
   };
 
@@ -115,6 +120,34 @@ const TaskPage: React.FC = () => {
     }
   };
 
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const { uri } = result.assets[0];
+      setImageUri(uri);
+      const downloadURL = await uploadTaskImage(
+        selectedListId as string,
+        taskId as string,
+        uri
+      );
+      await handleSave({ imageUri: downloadURL });
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    if (taskId) {
+      await deleteTaskImage(taskId as string);
+      setImageUri(null);
+      await handleSave({ imageUri: null });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -130,7 +163,7 @@ const TaskPage: React.FC = () => {
           style={[styles.textInput, { height: Math.max(35, inputHeight) }]}
           value={taskText}
           onChangeText={setTaskText}
-          onBlur={handleSave}
+          onBlur={() => handleSave()}
           multiline
           autoFocus
           onContentSizeChange={(e) =>
@@ -151,6 +184,22 @@ const TaskPage: React.FC = () => {
           <Picker.Item key={list.id} label={list.name} value={list.id} />
         ))}
       </Picker>
+      <View style={styles.imageContainer}>
+        <TouchableOpacity onPress={pickImage} style={styles.cameraButton}>
+          <Ionicons name="camera" size={24} color="white" />
+        </TouchableOpacity>
+        {imageUri && (
+          <>
+            <Image source={{ uri: imageUri }} style={styles.image} />
+            <TouchableOpacity
+              onPress={handleDeleteImage}
+              style={styles.deleteButton}
+            >
+              <Ionicons name="trash" size={24} color="white" />
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
       <CustomButton
         title="Supprimer la tâche"
         onPress={handleDelete}
@@ -188,6 +237,23 @@ const styles = StyleSheet.create({
     color: "white",
     backgroundColor: "#454545",
     marginVertical: 8,
+  },
+  cameraButton: {
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  imageContainer: {
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginVertical: 10,
+  },
+  deleteButton: {
+    alignItems: "center",
+    marginVertical: 10,
   },
 });
 
