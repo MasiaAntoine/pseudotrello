@@ -83,7 +83,7 @@ const TaskPage: React.FC = () => {
         taskData
       );
       setSelectedListId(newListId);
-      router.push(`/list/${tableId}`);
+      router.replace(`/task/${tableId}/${newListId}/${taskId}`);
     }
   };
 
