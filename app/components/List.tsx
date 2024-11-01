@@ -137,7 +137,6 @@ const List: React.FC<ListProps> = ({
           title="Ajouter"
           onPress={handleAddTask}
           buttonStyle={styles.addButton}
-          textStyle={styles.addButtonText}
         />
       </View>
     </View>
@@ -186,13 +185,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   addButton: {
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
     marginLeft: 10,
-  },
-  addButtonText: {
-    color: "white",
   },
 });
 

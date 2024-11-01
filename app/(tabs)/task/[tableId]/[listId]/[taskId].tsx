@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  ScrollView,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as ImagePicker from "expo-image-picker";
-import { Picker } from "@react-native-picker/picker"; // Importer Picker depuis @react-native-picker/picker
+import { Picker } from "@react-native-picker/picker";
 import { ThemedText } from "@/app/components/ThemedText";
 import CustomButton from "@/app/components/CustomButton";
 import {
@@ -149,7 +150,7 @@ const TaskPage: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBackPress}>
           <Ionicons name="arrow-back" size={24} color="white" />
@@ -205,7 +206,7 @@ const TaskPage: React.FC = () => {
         onPress={handleDelete}
         variant="danger"
       />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -215,6 +216,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#353636",
     height: "100%",
     paddingTop: 70,
+  },
+  scrollContainer: {
+    paddingHorizontal: 16,
+    backgroundColor: "#353636",
+    paddingTop: 70,
+    minHeight: "100%",
+    paddingBottom: 20,
   },
   header: {
     flexDirection: "row",
