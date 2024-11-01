@@ -5,11 +5,17 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
+  Picker,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ThemedText } from "@/app/components/ThemedText";
-import { fetchTaskById, updateTaskName } from "@/app/services";
+import {
+  fetchTaskById,
+  updateTaskName,
+  fetchLists,
+  updateTaskListId,
+} from "@/app/services";
 
 const TaskPage: React.FC = () => {
   const { tableId, listId, taskId } = useLocalSearchParams();
@@ -18,6 +24,18 @@ const TaskPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [taskText, setTaskText] = useState("");
   const [inputHeight, setInputHeight] = useState(0);
+  const [lists, setLists] = useState<any[]>([]);
+  const [selectedListId, setSelectedListId] = useState<string>(
+    listId as string
+  );
+
+  useEffect(() => {
+    if (tableId) {
+      fetchLists(tableId as string).then((data) => {
+        setLists(data);
+      });
+    }
+  }, [tableId]);
 
   useEffect(() => {
     if (listId && taskId) {
@@ -45,10 +63,27 @@ const TaskPage: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (listId && taskId) {
-      await updateTaskName(listId as string, taskId as string, taskText);
+    if (selectedListId && taskId) {
+      await updateTaskName(
+        selectedListId as string,
+        taskId as string,
+        taskText
+      );
       setIsEditing(false);
       setTaskData({ ...taskData, name: taskText });
+    }
+  };
+
+  const handleListChange = async (newListId: string) => {
+    if (newListId !== selectedListId && taskId && taskData) {
+      await updateTaskListId(
+        listId as string,
+        newListId,
+        taskId as string,
+        taskData
+      );
+      setSelectedListId(newListId);
+      router.push(`/list/${tableId}`);
     }
   };
 
@@ -77,6 +112,15 @@ const TaskPage: React.FC = () => {
           {taskData.name}
         </Text>
       )}
+      <Picker
+        selectedValue={selectedListId}
+        onValueChange={handleListChange}
+        style={styles.picker}
+      >
+        {lists.map((list) => (
+          <Picker.Item key={list.id} label={list.name} value={list.id} />
+        ))}
+      </Picker>
     </View>
   );
 };
@@ -104,6 +148,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     minHeight: 35,
+  },
+  picker: {
+    color: "white",
+    backgroundColor: "#454545",
+    marginVertical: 8,
   },
 });
 

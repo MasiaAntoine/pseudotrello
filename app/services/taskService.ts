@@ -72,4 +72,36 @@ const fetchTaskById = async (listId: string, taskId: string) => {
   }
 };
 
-export { fetchTaskById, addTask, fetchTasks, deleteTask, updateTaskName };
+// Fonction pour mettre à jour l'ID de la liste d'une tâche
+const updateTaskListId = async (
+  oldListId: string,
+  newListId: string,
+  taskId: string,
+  taskData: any
+) => {
+  try {
+    // Supprimer la tâche de l'ancienne liste
+    const oldTaskRef = ref(database, `tables/${oldListId}/tasks/${taskId}`);
+    await remove(oldTaskRef);
+
+    // Ajouter la tâche à la nouvelle liste
+    const newTaskRef = ref(database, `tables/${newListId}/tasks/${taskId}`);
+    await set(newTaskRef, taskData);
+
+    console.log("ID de la liste de la tâche mis à jour avec succès !");
+  } catch (error) {
+    console.error(
+      "Erreur lors de la mise à jour de l'ID de la liste de la tâche:",
+      error
+    );
+  }
+};
+
+export {
+  updateTaskListId,
+  fetchTaskById,
+  addTask,
+  fetchTasks,
+  deleteTask,
+  updateTaskName,
+};
