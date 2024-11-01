@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   Picker,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ThemedText } from "@/app/components/ThemedText";
 import CustomButton from "@/app/components/CustomButton";
@@ -34,7 +35,7 @@ const TaskPage: React.FC = () => {
   const [tableName, setTableName] = useState<string>("");
   const [listName, setListName] = useState<string>("");
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     if (tableId) {
       fetchTableById(tableId as string).then((data) => {
         setTableName(data?.name || "");
@@ -46,6 +47,16 @@ const TaskPage: React.FC = () => {
       });
     }
   }, [tableId, listId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
+  );
 
   useEffect(() => {
     if (listId && taskId) {
