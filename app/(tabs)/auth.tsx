@@ -31,18 +31,10 @@ const AuthPage: React.FC = () => {
         await login(email, password);
       } else {
         await register(email, password);
-        Alert.alert(
-          "Inscription réussie",
-          "Vous êtes inscrit avec succès. Un email de confirmation a été envoyé. Veuillez vérifier votre boîte de réception."
-        );
         setIsLogin(true);
       }
     } catch (error) {
-      console.error("Erreur d'authentification:", error);
-      Alert.alert(
-        "Erreur d'authentification",
-        "Une erreur est survenue lors de l'authentification."
-      );
+      Alert.alert("Erreur d'authentification", error.message);
     }
   };
 
