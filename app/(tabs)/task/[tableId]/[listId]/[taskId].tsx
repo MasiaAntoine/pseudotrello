@@ -10,12 +10,14 @@ import {
 import { useRouter, useLocalSearchParams } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ThemedText } from "@/app/components/ThemedText";
+import CustomButton from "@/app/components/CustomButton";
 import {
   fetchTaskById,
   updateTaskName,
   fetchLists,
   updateTaskListId,
   fetchTableById,
+  deleteTask,
 } from "@/app/services";
 
 const TaskPage: React.FC = () => {
@@ -95,6 +97,13 @@ const TaskPage: React.FC = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (listId && taskId) {
+      await deleteTask(listId as string, taskId as string);
+      router.push(`/list/${tableId}`);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -131,6 +140,11 @@ const TaskPage: React.FC = () => {
           <Picker.Item key={list.id} label={list.name} value={list.id} />
         ))}
       </Picker>
+      <CustomButton
+        title="Supprimer la tâche"
+        onPress={handleDelete}
+        variant="danger"
+      />
     </View>
   );
 };

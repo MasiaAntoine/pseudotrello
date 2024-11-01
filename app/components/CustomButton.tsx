@@ -12,6 +12,7 @@ interface CustomButtonProps {
   onPress: () => void;
   buttonStyle?: ViewStyle;
   textStyle?: TextStyle;
+  variant?: "default" | "danger";
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -19,17 +20,27 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   onPress,
   buttonStyle,
   textStyle,
+  variant = "default",
 }) => {
+  const buttonColorStyle =
+    variant === "danger" ? styles.buttonDanger : styles.buttonDefault;
+
   return (
-    <TouchableOpacity style={[styles.button, buttonStyle]} onPress={onPress}>
+    <TouchableOpacity style={[buttonColorStyle, buttonStyle]} onPress={onPress}>
       <Text style={[styles.buttonText, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
+  buttonDefault: {
     backgroundColor: "#37a6fe",
+    padding: 10,
+    borderRadius: 6,
+    alignItems: "center",
+  },
+  buttonDanger: {
+    backgroundColor: "#ff4d4d",
     padding: 10,
     borderRadius: 6,
     alignItems: "center",
