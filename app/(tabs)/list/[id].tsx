@@ -6,8 +6,9 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { ThemedText } from "@/app/components/ThemedText";
@@ -37,7 +38,7 @@ export default function TabTwoScreen() {
   const [lists, setLists] = useState([]);
   const [tasks, setTasks] = useState<{ [key: string]: any[] }>({});
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     if (id) {
       fetchTableById(id as string).then((data) => {
         setTableData(data);
@@ -56,6 +57,16 @@ export default function TabTwoScreen() {
     }
   }, [id]);
 
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
+  );
+
   const handleDelete = () => {
     if (id) {
       deleteTable(id as string).then(() => {
@@ -73,17 +84,7 @@ export default function TabTwoScreen() {
     try {
       await addList({ name: listName, tableId: id as string });
       setListName("");
-      fetchLists(id as string).then((data) => {
-        setLists(data);
-        data.forEach((list: any) => {
-          fetchTasks(list.id).then((tasksData) => {
-            setTasks((prevTasks) => ({
-              ...prevTasks,
-              [list.id]: tasksData,
-            }));
-          });
-        });
-      });
+      fetchData();
     } catch (error) {
       Alert.alert(
         "Erreur",
@@ -100,17 +101,7 @@ export default function TabTwoScreen() {
   };
 
   const handleListUpdate = () => {
-    fetchLists(id as string).then((data) => {
-      setLists(data);
-      data.forEach((list: any) => {
-        fetchTasks(list.id).then((tasksData) => {
-          setTasks((prevTasks) => ({
-            ...prevTasks,
-            [list.id]: tasksData,
-          }));
-        });
-      });
-    });
+    fetchData();
   };
 
   return (
