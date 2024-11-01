@@ -15,6 +15,7 @@ import {
   updateTaskName,
   fetchLists,
   updateTaskListId,
+  fetchTableById,
 } from "@/app/services";
 
 const TaskPage: React.FC = () => {
@@ -28,14 +29,21 @@ const TaskPage: React.FC = () => {
   const [selectedListId, setSelectedListId] = useState<string>(
     listId as string
   );
+  const [tableName, setTableName] = useState<string>("");
+  const [listName, setListName] = useState<string>("");
 
   useEffect(() => {
     if (tableId) {
+      fetchTableById(tableId as string).then((data) => {
+        setTableName(data?.name || "");
+      });
       fetchLists(tableId as string).then((data) => {
         setLists(data);
+        const currentList = data.find((list) => list.id === listId);
+        setListName(currentList?.name || "");
       });
     }
-  }, [tableId]);
+  }, [tableId, listId]);
 
   useEffect(() => {
     if (listId && taskId) {
@@ -95,6 +103,8 @@ const TaskPage: React.FC = () => {
         </TouchableOpacity>
         <ThemedText type="title">Tâche</ThemedText>
       </View>
+      <ThemedText type="subtitle">{`Tableau: ${tableName}`}</ThemedText>
+      <ThemedText type="subtitle">{`Liste: ${listName}`}</ThemedText>
       {isEditing ? (
         <TextInput
           style={[styles.textInput, { height: Math.max(35, inputHeight) }]}
